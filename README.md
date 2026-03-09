@@ -94,7 +94,8 @@ agro-lakehouse/
 │   ├── glue.tf
 │   ├── athena.tf
 │   ├── iam.tf
-│   └── variables.tf
+│   ├── variables.tf
+│   └── outputs.tf
 ├── ingestion/
 │   ├── explore.py              # profile all sample CSVs → docs/data_sources.md
 │   ├── indec/
@@ -214,9 +215,9 @@ dbt test
 ## Build Roadmap
 
 ### Phase 1 — Foundation
-- [ ] Set up AWS account, configure IAM roles and policies
-- [ ] Write Terraform for S3 buckets (bronze/silver/gold), Glue Catalog, Athena workgroup
-- [ ] Initialize GitHub repo, branch strategy, and CI skeleton
+- [x] Set up AWS account, configure IAM roles and policies
+- [x] Write Terraform for S3 buckets (bronze/silver/gold), Glue Catalog, Athena workgroup
+- [x] Initialize GitHub repo, branch strategy, and CI skeleton
 - [x] Manually download and explore INDEC + SENASA sample files
 
 ### Phase 2 — Ingestion
