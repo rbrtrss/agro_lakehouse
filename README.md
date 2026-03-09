@@ -184,6 +184,9 @@ cd agro-lakehouse
 # Set up Python environment
 uv sync
 
+# Install git hooks
+bash scripts/install-hooks.sh
+
 # Download sample data and explore schemas (no AWS required)
 uv run ingestion/indec/download_sample.py
 uv run ingestion/senasa/download_sample.py

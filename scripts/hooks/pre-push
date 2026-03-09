@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "pre-push: running ruff format..."
+uv run ruff format .
+
+echo "pre-push: running ruff check..."
+uv run ruff check .
+
+echo "pre-push: all checks passed."
