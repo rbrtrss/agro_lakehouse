@@ -81,6 +81,15 @@ Partitioning convention on Bronze: `source=<name>/year=<YYYY>/month=<MM>/`
 3. Generate a message following its format (summary < 50 chars, detailed body)
 4. Never use generic messages; never include Co-Authored-By or Claude Code lines
 
+## Pull Requests
+
+**ALWAYS** use the creating-pull-requests skill before any `gh pr create`:
+
+1. Run `git log main..HEAD --oneline` and `git diff main...HEAD` to review all changes
+2. Invoke `@/home/roberto/.claude/skills/creating-pull-requests/SKILL.md`
+3. Generate a title + structured body (What / Why / Changes / Checklist)
+4. Never use generic titles; never include Co-Authored-By or Claude Code lines
+
 ## Package Management
 
 Use `uv` exclusively — never `pip` or bare `python` for package operations.
