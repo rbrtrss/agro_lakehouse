@@ -223,6 +223,7 @@ dbt test
 ### Phase 2 — Ingestion
 - [x] Write Python ingestion scripts for INDEC CSV files → S3 Bronze
 - [x] Write World Bank API client → S3 Bronze
+- [x] Write SENASA phytosanitary certs ingestion → S3 Bronze
 - [ ] Set up AWS Glue job for large file processing
 - [ ] Register Iceberg tables in Glue Catalog, verify Athena queries
 
