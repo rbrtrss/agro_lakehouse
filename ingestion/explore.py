@@ -23,12 +23,16 @@ def profile_csv(path: Path) -> dict:
     columns = []
     for col in df.columns:
         null_pct = df[col].isna().mean() * 100
-        columns.append({
-            "name": col,
-            "dtype": str(df[col].dtype),
-            "null_pct": round(null_pct, 1),
-            "sample": str(df[col].dropna().iloc[0]) if df[col].notna().any() else "—",
-        })
+        columns.append(
+            {
+                "name": col,
+                "dtype": str(df[col].dtype),
+                "null_pct": round(null_pct, 1),
+                "sample": str(df[col].dropna().iloc[0])
+                if df[col].notna().any()
+                else "—",
+            }
+        )
     return {
         "path": path,
         "rows": rows,
@@ -42,7 +46,9 @@ def print_profile(profile: dict) -> None:
     source = profile["path"].parent.name
     filename = profile["path"].name
     console.rule(f"[bold cyan]{source} / {filename}[/bold cyan]")
-    console.print(f"Shape: [bold]{profile['rows']:,} rows × {profile['cols']} columns[/bold]")
+    console.print(
+        f"Shape: [bold]{profile['rows']:,} rows × {profile['cols']} columns[/bold]"
+    )
 
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Column")
@@ -51,7 +57,9 @@ def print_profile(profile: dict) -> None:
     table.add_column("Sample value")
 
     for col in profile["columns"]:
-        table.add_row(col["name"], col["dtype"], f"{col['null_pct']}%", col["sample"][:80])
+        table.add_row(
+            col["name"], col["dtype"], f"{col['null_pct']}%", col["sample"][:80]
+        )
 
     console.print(table)
     console.print("\n[dim]First 3 rows:[/dim]")
@@ -81,7 +89,9 @@ def build_markdown(profiles: list[dict]) -> str:
         ]
         for col in p["columns"]:
             sample = col["sample"].replace("|", "\\|")[:80]
-            lines.append(f"| `{col['name']}` | {col['dtype']} | {col['null_pct']}% | {sample} |")
+            lines.append(
+                f"| `{col['name']}` | {col['dtype']} | {col['null_pct']}% | {sample} |"
+            )
         lines += ["", "**First 3 rows:**", "", "```"]
         lines.append(p["head"].to_string(index=False))
         lines += ["```", ""]

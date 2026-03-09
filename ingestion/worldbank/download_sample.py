@@ -33,7 +33,9 @@ WB_BASE = "https://api.worldbank.org/v2/country"
 console = Console()
 
 
-async def fetch_indicator(client: httpx.AsyncClient, name: str, code: str) -> pd.DataFrame:
+async def fetch_indicator(
+    client: httpx.AsyncClient, name: str, code: str
+) -> pd.DataFrame:
     url = f"{WB_BASE}/{COUNTRY}/indicator/{code}"
     params = {"format": "json", "per_page": 100, "date": DATE_RANGE}
 
@@ -48,14 +50,16 @@ async def fetch_indicator(client: httpx.AsyncClient, name: str, code: str) -> pd
 
     rows = []
     for entry in payload[1]:
-        rows.append({
-            "country": entry.get("country", {}).get("value"),
-            "country_code": entry.get("countryiso3code"),
-            "indicator": name,
-            "indicator_code": code,
-            "year": entry.get("date"),
-            "value": entry.get("value"),
-        })
+        rows.append(
+            {
+                "country": entry.get("country", {}).get("value"),
+                "country_code": entry.get("countryiso3code"),
+                "indicator": name,
+                "indicator_code": code,
+                "year": entry.get("date"),
+                "value": entry.get("value"),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -70,7 +74,9 @@ async def main() -> None:
 
     non_empty = [f for f in frames if not f.empty]
     if not non_empty:
-        console.print("[red]No data returned for any indicator. Check network/API.[/red]")
+        console.print(
+            "[red]No data returned for any indicator. Check network/API.[/red]"
+        )
         sys.exit(1)
 
     df = pd.concat(non_empty, ignore_index=True)

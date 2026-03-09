@@ -6,7 +6,15 @@ import asyncio
 from pathlib import Path
 
 import httpx
-from rich.progress import Progress, SpinnerColumn, DownloadColumn, TransferSpeedColumn, TimeElapsedColumn, BarColumn, TextColumn
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    DownloadColumn,
+    TransferSpeedColumn,
+    TimeElapsedColumn,
+    BarColumn,
+    TextColumn,
+)
 
 
 _MAX_RETRIES = 3
@@ -32,7 +40,9 @@ async def download_file(url: str, dest_path: Path) -> Path:
                     TransferSpeedColumn(),
                     TimeElapsedColumn(),
                 ) as progress:
-                    task = progress.add_task(f"Downloading {dest_path.name}", total=None)
+                    task = progress.add_task(
+                        f"Downloading {dest_path.name}", total=None
+                    )
                     async with client.stream("GET", url) as response:
                         response.raise_for_status()
                         total = int(response.headers.get("content-length", 0)) or None
@@ -47,8 +57,10 @@ async def download_file(url: str, dest_path: Path) -> Path:
                 raise RuntimeError(
                     f"Failed to download {url} after {_MAX_RETRIES} attempts: {exc}"
                 ) from exc
-            wait = _BACKOFF_BASE ** attempt
-            print(f"  [attempt {attempt}/{_MAX_RETRIES}] error: {exc}. Retrying in {wait}s…")
+            wait = _BACKOFF_BASE**attempt
+            print(
+                f"  [attempt {attempt}/{_MAX_RETRIES}] error: {exc}. Retrying in {wait}s…"
+            )
             await asyncio.sleep(wait)
 
     raise RuntimeError("Unreachable")  # pragma: no cover

@@ -51,7 +51,9 @@ async def main() -> None:
     console.print(f"Saving to: {dest}")
 
     await download_file(url, dest)
-    console.print(f"[bold green]Done.[/bold green] Saved {dest.stat().st_size / 1024:.1f} KB → {dest}")
+    console.print(
+        f"[bold green]Done.[/bold green] Saved {dest.stat().st_size / 1024:.1f} KB → {dest}"
+    )
 
 
 if __name__ == "__main__":

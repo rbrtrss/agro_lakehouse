@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "pre-commit: running ruff format..."
+uv run ruff format .
+
+# Re-stage any files that ruff just reformatted
+git add -u
+
+echo "pre-commit: running ruff check..."
+uv run ruff check .
+
+echo "pre-commit: all checks passed."
