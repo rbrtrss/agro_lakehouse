@@ -194,7 +194,7 @@ dbt test
 - [ ] Set up AWS account, configure IAM roles and policies
 - [ ] Write Terraform for S3 buckets (bronze/silver/gold), Glue Catalog, Athena workgroup
 - [ ] Initialize GitHub repo, branch strategy, and CI skeleton
-- [ ] Manually download and explore INDEC + SENASA sample files
+- [x] Manually download and explore INDEC + SENASA sample files
 
 ### Phase 2 — Ingestion
 - [ ] Write Python ingestion scripts for INDEC CSV files → S3 Bronze

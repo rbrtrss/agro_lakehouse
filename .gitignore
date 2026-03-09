@@ -8,3 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Sample data files (kept local, not committed)
+data/samples/**/*.csv
+data/samples/**/*.json
+data/samples/**/*.xls
+data/samples/**/*.xlsx
