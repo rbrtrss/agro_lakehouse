@@ -1,0 +1,22 @@
+name: Terraform — Validate & Plan
+
+on:
+  pull_request:
+    paths: ["terraform/**"]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-east-1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform -chdir=terraform init
+      - run: terraform -chdir=terraform validate
+      - run: terraform -chdir=terraform plan -no-color

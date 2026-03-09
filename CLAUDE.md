@@ -68,8 +68,9 @@ Partitioning convention on Bronze: `source=<name>/year=<YYYY>/month=<MM>/`
 
 | Workflow | Trigger | Action |
 |---|---|---|
-| `dbt_test.yml` | PR touching `dbt/` | `dbt deps && dbt run && dbt test` |
-| `terraform_plan.yml` | PR touching `terraform/` | `terraform init && terraform plan` |
+| `ci.yml` | Every PR + push to `main` | `ruff check` + `ruff format --check` |
+| `dbt_test.yml` | PR touching `dbt/` | `dbt deps && dbt compile` (syntax check; full run requires AWS) |
+| `terraform_plan.yml` | PR touching `terraform/` | `terraform init && terraform validate && terraform plan` |
 
 ## Git Commits
 
