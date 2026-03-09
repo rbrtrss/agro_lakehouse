@@ -100,7 +100,7 @@ agro-lakehouse/
 │   ├── explore.py              # profile all sample CSVs → docs/data_sources.md
 │   ├── indec/
 │   │   ├── download_sample.py  # fetch CSV via datos.gob.ar CKAN API
-│   │   └── ingest_indec.py
+│   │   └── ingest_indec.py     # ingest INDEC exports CSV → S3 Bronze (idempotent)
 │   ├── senasa/
 │   │   ├── download_sample.py
 │   │   └── ingest_senasa.py
@@ -109,7 +109,7 @@ agro-lakehouse/
 │   │   └── ingest_worldbank.py
 │   └── utils/
 │       ├── http.py             # shared async httpx client with retry + progress
-│       └── s3_utils.py
+│       └── s3_utils.py         # shared S3 helpers (make_s3_client, object_exists, upload_file)
 ├── data/
 │   └── samples/               # local only — gitignored CSVs
 │       ├── indec/
@@ -221,7 +221,7 @@ dbt test
 - [x] Manually download and explore INDEC + SENASA sample files
 
 ### Phase 2 — Ingestion
-- [ ] Write Python ingestion scripts for INDEC CSV files → S3 Bronze
+- [x] Write Python ingestion scripts for INDEC CSV files → S3 Bronze
 - [ ] Write World Bank API client → S3 Bronze
 - [ ] Set up AWS Glue job for large file processing
 - [ ] Register Iceberg tables in Glue Catalog, verify Athena queries
