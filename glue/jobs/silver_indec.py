@@ -26,12 +26,35 @@ sc = SparkContext()
 glueContext = GlueContext(sc)
 spark = glueContext.spark_session
 
+# ── Configure Iceberg catalog BEFORE any catalog access ───────────────────────
+# Spark's CatalogManager lazily initialises plugins on first access, so
+# spark.conf.set() here takes effect before any SQL or writeTo() call.
+# Glue 4.0 adds the Iceberg JARs; we register glue_catalog as a SparkCatalog
+# backed by GlueCatalog so that three-part names (glue_catalog.db.table) work.
+spark.conf.set(
+    "spark.sql.catalog.glue_catalog",
+    "org.apache.iceberg.spark.SparkCatalog",
+)
+spark.conf.set(
+    "spark.sql.catalog.glue_catalog.catalog-impl",
+    "org.apache.iceberg.aws.glue.GlueCatalog",
+)
+spark.conf.set(
+    "spark.sql.catalog.glue_catalog.io-impl",
+    "org.apache.iceberg.aws.s3.S3FileIO",
+)
+spark.conf.set(
+    "spark.sql.catalog.glue_catalog.warehouse",
+    f"s3://{silver_bucket}/",
+)
+
 # ── 1. Read raw CSV from Bronze ───────────────────────────────────────────────
 
 df_raw = (
     spark.read.option("header", "true")
     .option("inferSchema", "false")
-    .csv(f"s3://{bronze_bucket}/source=indec/**/*.csv")
+    .option("recursiveFileLookup", "true")
+    .csv(f"s3://{bronze_bucket}/source=indec/")
 )
 
 # ── 2. Identify provinces from *_total_* sentinel columns ────────────────────

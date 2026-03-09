@@ -28,17 +28,14 @@ resource "aws_s3_object" "glue_script_worldbank" {
 # ─── Shared job arguments ──────────────────────────────────────────────────────
 
 locals {
-  iceberg_conf = join(" ", [
-    "--conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions",
-    "--conf spark.sql.catalog.glue_catalog=org.apache.iceberg.aws.glue.GlueCatalog",
-    "--conf spark.sql.catalog.glue_catalog.warehouse=s3://${local.silver_bucket}/",
-    "--conf spark.sql.catalog.glue_catalog.io-impl=org.apache.iceberg.aws.s3.S3FileIO",
-  ])
-
+  # Glue 4.0 with --datalake-formats iceberg auto-configures:
+  #   spark.sql.catalog.glue_catalog = org.apache.iceberg.spark.SparkCatalog
+  #   spark.sql.catalog.glue_catalog.catalog-impl = org.apache.iceberg.aws.glue.GlueCatalog
+  #   spark.sql.extensions (IcebergSparkSessionExtensions)
+  # No --conf override needed; passing GlueCatalog directly causes CatalogPlugin error.
   glue_common_args = {
     "--enable-glue-datacatalog" = "true"
     "--datalake-formats"        = "iceberg"
-    "--conf"                    = local.iceberg_conf
     "--BRONZE_BUCKET"           = aws_s3_bucket.bronze.id
     "--SILVER_BUCKET"           = aws_s3_bucket.silver.id
     "--SILVER_DB"               = aws_glue_catalog_database.silver.name

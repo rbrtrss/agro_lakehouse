@@ -27,12 +27,31 @@ sc = SparkContext()
 glueContext = GlueContext(sc)
 spark = glueContext.spark_session
 
+# ── Configure Iceberg catalog BEFORE any catalog access ───────────────────────
+spark.conf.set(
+    "spark.sql.catalog.glue_catalog",
+    "org.apache.iceberg.spark.SparkCatalog",
+)
+spark.conf.set(
+    "spark.sql.catalog.glue_catalog.catalog-impl",
+    "org.apache.iceberg.aws.glue.GlueCatalog",
+)
+spark.conf.set(
+    "spark.sql.catalog.glue_catalog.io-impl",
+    "org.apache.iceberg.aws.s3.S3FileIO",
+)
+spark.conf.set(
+    "spark.sql.catalog.glue_catalog.warehouse",
+    f"s3://{silver_bucket}/",
+)
+
 # ── 1. Read raw CSV from Bronze ───────────────────────────────────────────────
 
 df_raw = (
     spark.read.option("header", "true")
     .option("inferSchema", "false")
-    .csv(f"s3://{bronze_bucket}/source=worldbank/**/*.csv")
+    .option("recursiveFileLookup", "true")
+    .csv(f"s3://{bronze_bucket}/source=worldbank/")
 )
 
 # ── 2. Cast types and drop nulls ──────────────────────────────────────────────
