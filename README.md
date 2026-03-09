@@ -214,8 +214,8 @@ dbt test
 ## Build Roadmap
 
 ### Phase 1 — Foundation
-- [ ] Set up AWS account, configure IAM roles and policies
-- [ ] Write Terraform for S3 buckets (bronze/silver/gold), Glue Catalog, Athena workgroup
+- [x] Set up AWS account, configure IAM roles and policies
+- [x] Write Terraform for S3 buckets (bronze/silver/gold), Glue Catalog, Athena workgroup
 - [ ] Initialize GitHub repo, branch strategy, and CI skeleton
 - [x] Manually download and explore INDEC + SENASA sample files
 
