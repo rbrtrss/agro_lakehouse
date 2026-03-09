@@ -125,13 +125,30 @@ agro-lakehouse/
 │       ├── ingestion_dag.py
 │       └── dbt_run_dag.py
 ├── .github/
-│   └── workflows/
-│       ├── dbt_test.yml
-│       └── terraform_plan.yml
+│   ├── workflows/
+│   │   ├── ci.yml
+│   │   ├── dbt_test.yml
+│   │   └── terraform_plan.yml
+│   └── pull_request_template.md
 ├── docs/
 │   └── architecture_diagram.png
 └── README.md
 ```
+
+---
+
+## Branching Strategy
+
+```
+main          ← stable, always deployable; protected
+  └── feat/<scope>-<description>   ← feature / phase work
+  └── fix/<description>            ← bug fixes
+  └── infra/<description>          ← Terraform-only changes
+  └── data/<description>           ← dbt model changes
+  └── ci/<description>             ← CI/CD workflow changes
+```
+
+Branch protection on `main`: PR required, status checks must pass, no direct pushes.
 
 ---
 
@@ -151,9 +168,7 @@ git clone https://github.com/your-username/agro-lakehouse
 cd agro-lakehouse
 
 # Set up Python environment
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+uv sync
 
 # Deploy infrastructure
 cd terraform
@@ -162,7 +177,7 @@ terraform plan
 terraform apply
 
 # Run ingestion
-python ingestion/indec/ingest_indec.py
+uv run ingestion/indec/ingest_indec.py
 
 # Run dbt
 cd dbt
