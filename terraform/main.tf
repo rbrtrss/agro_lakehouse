@@ -22,6 +22,7 @@ terraform {
   # }
 }
 
+# CI verification: confirms terraform_plan.yml workflow runs on PRs touching terraform/
 provider "aws" {
   region = var.aws_region
 
