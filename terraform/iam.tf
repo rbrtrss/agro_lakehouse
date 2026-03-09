@@ -419,8 +419,13 @@ resource "aws_iam_user_policy" "ci_plan" {
   policy = data.aws_iam_policy_document.ci_plan.json
 }
 
-resource "aws_iam_user_policy" "ci_apply" {
-  name   = "ci-apply-policy"
-  user   = aws_iam_user.ci.name
+# ci_apply exceeds the 2048-byte inline-policy limit — use a managed policy instead
+resource "aws_iam_policy" "ci_apply" {
+  name   = "agro-ci-apply-policy"
   policy = data.aws_iam_policy_document.ci_apply.json
+}
+
+resource "aws_iam_user_policy_attachment" "ci_apply" {
+  user       = aws_iam_user.ci.name
+  policy_arn = aws_iam_policy.ci_apply.arn
 }
