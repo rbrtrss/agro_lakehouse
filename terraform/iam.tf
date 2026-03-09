@@ -291,6 +291,20 @@ data "aws_iam_policy_document" "ci_plan" {
     resources = ["*"]
   }
 
+  # Glue job read (needed to plan aws_glue_job resources)
+  statement {
+    sid     = "GlueJobRead"
+    actions = ["glue:GetJob", "glue:GetJobRun", "glue:ListJobs"]
+    resources = ["*"]
+  }
+
+  # S3 scripts read (plan computes etag / heads the object)
+  statement {
+    sid     = "S3ScriptsRead"
+    actions = ["s3:GetObject", "s3:HeadObject"]
+    resources = ["arn:${local.partition}:s3:::${local.silver_bucket}/glue-scripts/*"]
+  }
+
   # Athena read
   statement {
     sid = "AthenaRead"
@@ -348,7 +362,7 @@ data "aws_iam_policy_document" "ci_apply" {
     ]
   }
 
-  # Glue — full CRUD
+  # Glue — full CRUD (databases, tables, and jobs)
   statement {
     sid = "GlueManage"
     actions = [
@@ -362,6 +376,22 @@ data "aws_iam_policy_document" "ci_apply" {
       "glue:UpdateTable",
       "glue:GetTable",
       "glue:GetTables",
+    ]
+    resources = ["*"]
+  }
+
+  # Glue job management (needed to apply aws_glue_job resources)
+  statement {
+    sid = "GlueJobManage"
+    actions = [
+      "glue:CreateJob",
+      "glue:UpdateJob",
+      "glue:DeleteJob",
+      "glue:GetJob",
+      "glue:GetJobRun",
+      "glue:ListJobs",
+      "glue:TagResource",
+      "glue:UntagResource",
     ]
     resources = ["*"]
   }
