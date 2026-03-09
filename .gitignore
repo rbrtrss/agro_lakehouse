@@ -9,6 +9,11 @@ wheels/
 # Virtual environments
 .venv
 
+# Terraform
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+
 # Sample data files (kept local, not committed)
 data/samples/**/*.csv
 data/samples/**/*.json
