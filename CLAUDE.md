@@ -77,9 +77,10 @@ Partitioning convention on Bronze: `source=<name>/year=<YYYY>/month=<MM>/`
 **ALWAYS** use the generating-commit-messages skill before any `git commit`:
 
 1. Run `git diff --staged` to review staged changes
-2. Invoke `@/home/roberto/.claude/skills/generating-commit-messages/SKILL.md`
-3. Generate a message following its format (summary < 50 chars, detailed body)
-4. Never use generic messages; never include Co-Authored-By or Claude Code lines
+2. Check if any items in the README.md Build Roadmap can now be checked off — if so, update them and stage the change before committing
+3. Invoke `@/home/roberto/.claude/skills/generating-commit-messages/SKILL.md`
+4. Generate a message following its format (summary < 50 chars, detailed body)
+5. Never use generic messages; never include Co-Authored-By or Claude Code lines
 
 ## Pull Requests
 

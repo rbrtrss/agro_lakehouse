@@ -36,12 +36,14 @@ INDEC / SENASA / Bolsa de Cereales / World Bank API
 
 ## Data Sources
 
-| Source | Data | Format |
-|---|---|---|
-| [INDEC](https://datos.gob.ar/dataset?tags=exportaciones) | Export volumes & FOB values by product | CSV |
-| [SENASA](https://datos.senasa.gob.ar) | Phytosanitary certificates, export destinations | CSV |
-| Bolsa de Cereales | Grain harvest estimates by province | CSV/XLS |
-| [World Bank](https://data.worldbank.org) | Global commodity prices (soy, wheat, corn) | API |
+| Source | Data | Format | Schema notes |
+|---|---|---|---|
+| [INDEC](https://datos.gob.ar/dataset?tags=exportaciones) | Export FOB values by province × country | CSV | Wide format: 32 rows (annual 1993–2024) × 337 `<province>_<country>` columns — needs unpivoting in staging |
+| [SENASA](https://datos.senasa.gob.ar) | Phytosanitary certificates by destination | CSV | Tidy: 32,571 rows × 11 cols — `fecha`, `provincia`, `pais_destino`, ISO 3166 code, `continente`, `mercaderia_certificada`, `tn` |
+| Bolsa de Cereales | Grain harvest estimates by province | CSV/XLS | Manual download — no public API |
+| [World Bank WDI](https://data.worldbank.org) | Argentina agricultural indicators | API | Long format: `country`, `indicator`, `year`, `value` — cereal production, crop index, yield, land area |
+
+> Full column-level profiles with sample values: [`docs/data_sources.md`](docs/data_sources.md)
 
 ---
 
@@ -94,14 +96,25 @@ agro-lakehouse/
 │   ├── iam.tf
 │   └── variables.tf
 ├── ingestion/
+│   ├── explore.py              # profile all sample CSVs → docs/data_sources.md
 │   ├── indec/
+│   │   ├── download_sample.py  # fetch CSV via datos.gob.ar CKAN API
 │   │   └── ingest_indec.py
 │   ├── senasa/
+│   │   ├── download_sample.py
 │   │   └── ingest_senasa.py
 │   ├── worldbank/
+│   │   ├── download_sample.py  # fetch Argentina WDI indicators from WB API
 │   │   └── ingest_worldbank.py
 │   └── utils/
+│       ├── http.py             # shared async httpx client with retry + progress
 │       └── s3_utils.py
+├── data/
+│   └── samples/               # local only — gitignored CSVs
+│       ├── indec/
+│       ├── senasa/
+│       ├── worldbank/
+│       └── bolsa/             # manual download (no public API)
 ├── dbt/
 │   ├── dbt_project.yml
 │   ├── profiles.yml
@@ -131,6 +144,7 @@ agro-lakehouse/
 │   │   └── terraform_plan.yml
 │   └── pull_request_template.md
 ├── docs/
+│   ├── data_sources.md         # auto-generated schema profiles
 │   └── architecture_diagram.png
 └── README.md
 ```
@@ -170,6 +184,15 @@ cd agro-lakehouse
 # Set up Python environment
 uv sync
 
+# Install git hooks
+bash scripts/install-hooks.sh
+
+# Download sample data and explore schemas (no AWS required)
+uv run ingestion/indec/download_sample.py
+uv run ingestion/senasa/download_sample.py
+uv run ingestion/worldbank/download_sample.py
+uv run ingestion/explore.py        # prints profiles + writes docs/data_sources.md
+
 # Deploy infrastructure
 cd terraform
 terraform init
@@ -194,7 +217,7 @@ dbt test
 - [ ] Set up AWS account, configure IAM roles and policies
 - [ ] Write Terraform for S3 buckets (bronze/silver/gold), Glue Catalog, Athena workgroup
 - [ ] Initialize GitHub repo, branch strategy, and CI skeleton
-- [ ] Manually download and explore INDEC + SENASA sample files
+- [x] Manually download and explore INDEC + SENASA sample files
 
 ### Phase 2 — Ingestion
 - [ ] Write Python ingestion scripts for INDEC CSV files → S3 Bronze
