@@ -56,3 +56,25 @@ def wb_payload():
         return [{}, rows]
 
     return _make
+
+
+@pytest.fixture()
+def weather_payload():
+    """Factory: weather_payload(province, n) builds an Open-Meteo API response."""
+
+    def _make(province="cordoba", n=3):
+        dates = [f"2024-01-{i + 1:02d}" for i in range(n)]
+        return {
+            "latitude": -31.4,
+            "longitude": -64.2,
+            "daily": {
+                "time": dates,
+                "temperature_2m_max": [30.0 + i for i in range(n)],
+                "temperature_2m_min": [15.0 + i for i in range(n)],
+                "precipitation_sum": [0.0, 2.5, 10.1][:n],
+                "wind_speed_10m_max": [20.0 + i for i in range(n)],
+                "et0_fao_evapotranspiration": [4.5 + i * 0.1 for i in range(n)],
+            },
+        }
+
+    return _make

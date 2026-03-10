@@ -73,6 +73,17 @@ Partitioning convention on Bronze: `source=<name>/year=<YYYY>/month=<MM>/`
 | `dbt_test.yml` | PR touching `dbt/` | `dbt deps && dbt compile` (syntax check; full run requires AWS) |
 | `terraform_plan.yml` | PR touching `terraform/` | `terraform init && terraform validate && terraform plan` |
 
+## Test-Driven Development (TDD)
+
+**ALWAYS** follow the Red-Green cycle when adding any new feature:
+
+1. **Write the test first** — define the expected behavior in `tests/`
+2. **Run the test** — confirm it fails (`uv run pytest`)
+3. **Write the minimum code** to make it pass
+4. **Repeat** iteratively until the feature is complete
+
+Never write implementation code before a failing test exists for it.
+
 ## Git Commits
 
 **ALWAYS** use the generating-commit-messages skill before any `git commit`:
