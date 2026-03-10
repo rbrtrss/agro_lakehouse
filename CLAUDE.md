@@ -20,7 +20,8 @@ agro-lakehouse/
 │       ├── intermediate/ # int_* enrichment joins
 │       └── marts/      # fct_exports + dim_* tables
 ├── airflow/dags/       # Ingestion + dbt orchestration DAGs
-└── .github/workflows/  # CI: dbt test on PR, terraform plan on infra changes
+├── tests/              # pytest unit tests for ingestion layer (moto + respx, no AWS/network)
+└── .github/workflows/  # CI: lint, pytest, dbt test on PR, terraform plan on infra changes
 ```
 
 ## Architecture — Medallion Layers
@@ -68,7 +69,7 @@ Partitioning convention on Bronze: `source=<name>/year=<YYYY>/month=<MM>/`
 
 | Workflow | Trigger | Action |
 |---|---|---|
-| `ci.yml` | Every PR + push to `main` | `ruff check` + `ruff format --check` |
+| `ci.yml` | Every PR + push to `main` | `ruff check` + `ruff format --check` + `pytest` |
 | `dbt_test.yml` | PR touching `dbt/` | `dbt deps && dbt compile` (syntax check; full run requires AWS) |
 | `terraform_plan.yml` | PR touching `terraform/` | `terraform init && terraform validate && terraform plan` |
 
@@ -104,6 +105,10 @@ uv run <script>        # run a script in the project environment
 ## Common Commands
 
 ```bash
+# Tests
+uv run pytest
+uv run pytest --tb=short -q
+
 # Ingestion
 uv run ingestion/indec/ingest_indec.py
 uv run ingestion/worldbank/ingest_worldbank.py
