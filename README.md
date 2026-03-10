@@ -57,7 +57,7 @@ INDEC / SENASA / Bolsa de Cereales / World Bank API
 | Transformation | dbt Core (Athena adapter) |
 | Query Engine | AWS Athena |
 | Orchestration | Apache Airflow |
-| Data Quality | dbt tests + Great Expectations |
+| Data Quality | dbt tests + Great Expectations + pytest |
 | Infrastructure | Terraform |
 | CI/CD | GitHub Actions |
 | Visualization | Apache Superset |
@@ -144,10 +144,43 @@ agro-lakehouse/
 │   │   ├── dbt_test.yml
 │   │   └── terraform_plan.yml
 │   └── pull_request_template.md
+├── tests/
+│   ├── conftest.py             # shared fixtures (moto S3, CKAN/WB payload factories)
+│   ├── test_explore.py
+│   ├── utils/
+│   │   ├── test_s3_utils.py
+│   │   └── test_http.py
+│   ├── indec/
+│   │   └── test_ingest_indec.py
+│   ├── senasa/
+│   │   └── test_ingest_senasa.py
+│   └── worldbank/
+│       └── test_ingest_worldbank.py
 ├── docs/
 │   ├── data_sources.md         # auto-generated schema profiles
 │   └── architecture_diagram.png
 └── README.md
+```
+
+---
+
+## Testing
+
+Unit tests cover the ingestion layer (Bronze scripts + shared utils). No AWS credentials or network access required — S3 is mocked with [moto](https://github.com/getmoto/moto) and HTTP with [respx](https://github.com/lundberg/respx).
+
+| Suite | Tests | What's covered |
+|---|---|---|
+| `tests/utils/test_s3_utils.py` | 7 | `object_exists`, `upload_file`, `make_s3_client` |
+| `tests/utils/test_http.py` | 6 | `download_file` — success, retries, 4xx errors, parent-dir creation |
+| `tests/indec/test_ingest_indec.py` | 7 | S3 key partitioning, CKAN CSV resource fetch |
+| `tests/senasa/test_ingest_senasa.py` | 7 | Same as INDEC for `source=senasa` |
+| `tests/worldbank/test_ingest_worldbank.py` | 9 | S3 key, `fetch_indicator` columns/payloads/errors |
+| `tests/test_explore.py` | 11 | `profile_csv`, `build_markdown` (shape, nulls, pipe escaping) |
+
+```bash
+uv run pytest          # run all tests
+uv run pytest -q       # quiet output
+uv run pytest --tb=short tests/utils/   # run a single suite
 ```
 
 ---
