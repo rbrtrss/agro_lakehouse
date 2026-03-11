@@ -25,6 +25,13 @@ resource "aws_s3_object" "glue_script_worldbank" {
   etag   = filemd5("${path.module}/../glue/jobs/silver_worldbank.py")
 }
 
+resource "aws_s3_object" "glue_script_weather" {
+  bucket = aws_s3_bucket.silver.id
+  key    = "glue-scripts/silver_weather.py"
+  source = "${path.module}/../glue/jobs/silver_weather.py"
+  etag   = filemd5("${path.module}/../glue/jobs/silver_weather.py")
+}
+
 # ─── Shared job arguments ──────────────────────────────────────────────────────
 
 locals {
@@ -93,4 +100,21 @@ resource "aws_glue_job" "silver_worldbank" {
 
   default_arguments = local.glue_common_args
   depends_on        = [aws_s3_object.glue_script_worldbank]
+}
+
+resource "aws_glue_job" "silver_weather" {
+  name              = "agro-silver-weather"
+  role_arn          = aws_iam_role.glue.arn
+  glue_version      = "4.0"
+  worker_type       = "G.1X"
+  number_of_workers = 2
+
+  command {
+    name            = "glueetl"
+    script_location = "s3://${aws_s3_bucket.silver.id}/glue-scripts/silver_weather.py"
+    python_version  = "3"
+  }
+
+  default_arguments = local.glue_common_args
+  depends_on        = [aws_s3_object.glue_script_weather]
 }
