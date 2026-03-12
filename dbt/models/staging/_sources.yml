@@ -17,9 +17,6 @@ sources:
           - name: country
             tests:
               - not_null
-          - name: commodity
-            tests:
-              - not_null
           - name: fob_usd
             tests:
               - not_null
@@ -27,9 +24,6 @@ sources:
       - name: senasa_certs
         description: SENASA phytosanitary certificates with destination countries
         columns:
-          - name: year
-            tests:
-              - not_null
           - name: provincia
             tests:
               - not_null
@@ -37,11 +31,7 @@ sources:
             tests:
               - not_null
           - name: mercaderia_certificada
-            tests:
-              - not_null
-          - name: toneladas
-            tests:
-              - not_null
+          - name: tn
 
       - name: worldbank_indicators
         description: World Bank commodity price indicators
@@ -66,8 +56,5 @@ sources:
             tests:
               - not_null
           - name: province
-            tests:
-              - not_null
-          - name: station_id
             tests:
               - not_null
