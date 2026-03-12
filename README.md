@@ -275,10 +275,117 @@ dbt test
 
 ### Phase 5 — Polish & Portfolio
 - [ ] Connect Superset to Athena, build dashboard (choropleth map + time series)
-- [ ] Write architecture diagram (draw.io or Excalidraw)
+- [x] Write architecture diagram (Mermaid — Gold layer star schema + lineage)
 - [ ] Write detailed README with setup instructions, architecture, and screenshots
 - [ ] Record Loom walkthrough (5–10 min)
 - [ ] Deploy cost estimate section in README
+
+---
+
+## Gold Layer Architecture
+
+### Star Schema — `fct_exports` + Dimensions
+
+```mermaid
+erDiagram
+    fct_exports {
+        string export_key PK
+        string date_key FK
+        string destination_key FK
+        string product_key FK
+        string province_key FK
+        int year
+        float total_tn
+        float fob_usd
+    }
+
+    dim_date {
+        string date_key PK
+        int year
+        int quarter
+        int month
+        int week
+        string year_quarter
+    }
+
+    dim_product {
+        string product_key PK
+        string commodity
+        string product_category
+        string commodity_english
+    }
+
+    dim_province {
+        string province_key PK
+        string province
+        boolean is_pampa_region
+        string main_crop
+    }
+
+    dim_destination {
+        string destination_key PK
+        string country_iso2
+        string country
+        string continent
+    }
+
+    fct_exports }o--|| dim_date : "date_key"
+    fct_exports }o--|| dim_product : "product_key"
+    fct_exports }o--|| dim_province : "province_key"
+    fct_exports }o--|| dim_destination : "destination_key"
+```
+
+### Model Lineage — Bronze → Gold
+
+```mermaid
+flowchart TD
+    classDef source fill:#E6E6FA,stroke:#555,stroke-width:1px,color:darkblue
+    classDef staging fill:#87CEEB,stroke:#333,stroke-width:1px,color:darkblue
+    classDef intermediate fill:#FFD700,stroke:#555,stroke-width:1px,color:#333
+    classDef mart fill:#90EE90,stroke:#333,stroke-width:2px,color:darkgreen
+    classDef fact fill:#98FB98,stroke:#2E8B57,stroke-width:2px,color:darkgreen
+    classDef snapshot fill:#FFDAB9,stroke:#888,stroke-width:1px,color:#333
+
+    S1[("📦 s3://agro-lakehouse-silver\nindec_exports")]:::source
+    S2[("📦 s3://agro-lakehouse-silver\nsenasa_certs")]:::source
+    S3[("📦 s3://agro-lakehouse-silver\nworldbank_prices")]:::source
+    S4[("📦 s3://agro-lakehouse-silver\nweather_readings")]:::source
+
+    STG1["🗂️ stg_indec_exports\n(view)"]:::staging
+    STG2["🗂️ stg_senasa_certs\n(view)"]:::staging
+    STG3["🗂️ stg_worldbank_prices\n(view)"]:::staging
+    STG4["🗂️ stg_weather_readings\n(view)"]:::staging
+    SNAP["📷 snap_destination\n(SCD2 snapshot)"]:::snapshot
+
+    INT["⚙️ int_exports_enriched\n(view)"]:::intermediate
+
+    FCT["⭐ fct_exports\n(Iceberg table)"]:::fact
+    DD["📅 dim_date\n(Iceberg table)"]:::mart
+    DP["🌾 dim_product\n(Iceberg table)"]:::mart
+    DPR["🗺️ dim_province\n(Iceberg table)"]:::mart
+    DDEST["🌍 dim_destination\n(Iceberg table)"]:::mart
+
+    S1 --> STG1
+    S2 --> STG2
+    S3 --> STG3
+    S4 --> STG4
+    S2 --> SNAP
+
+    STG1 --> INT
+    STG2 --> INT
+    STG3 --> INT
+
+    INT --> FCT
+    STG1 --> DP
+    STG1 --> DPR
+    SNAP --> DDEST
+    FCT --> DD
+
+    FCT --- |"date_key"| DD
+    FCT --- |"product_key"| DP
+    FCT --- |"province_key"| DPR
+    FCT --- |"destination_key"| DDEST
+```
 
 ---
 
