@@ -1,0 +1,11 @@
+agro_lakehouse:
+  target: dev
+  outputs:
+    dev:
+      type: athena
+      database: awsdatacatalog
+      schema: agro_gold
+      s3_staging_dir: "s3://agro-lakehouse-athena-results/dbt/"
+      region_name: us-east-1
+      work_group: agro_workgroup
+      threads: 4

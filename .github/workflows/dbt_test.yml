@@ -13,8 +13,8 @@ jobs:
         with:
           python-version: "3.13"
       - run: uv sync
-      - run: uv run dbt deps --project-dir dbt
-      - run: uv run dbt compile --project-dir dbt
+      - run: uv run dbt deps    --project-dir dbt --profiles-dir dbt
+      - run: uv run dbt compile --project-dir dbt --profiles-dir dbt
       # Full dbt run + test requires AWS creds — skip in CI until Athena is set up
-      # - run: uv run dbt run --project-dir dbt
-      # - run: uv run dbt test --project-dir dbt
+      # - run: uv run dbt run  --project-dir dbt --profiles-dir dbt
+      # - run: uv run dbt test --project-dir dbt --profiles-dir dbt

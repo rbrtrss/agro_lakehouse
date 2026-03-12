@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: stg_indec_exports
+    description: Staged INDEC export records — select + rename only
+    columns:
+      - name: year
+        tests:
+          - not_null
+      - name: province
+        tests:
+          - not_null
+      - name: country
+        tests:
+          - not_null
+      - name: commodity
+        tests:
+          - not_null
+      - name: fob_usd
+        tests:
+          - not_null
+      - name: total_tn
+        tests:
+          - not_null
+
+  - name: stg_senasa_certs
+    description: Staged SENASA phytosanitary certificates — select + rename only
+    columns:
+      - name: year
+        tests:
+          - not_null
+      - name: province
+        tests:
+          - not_null
+      - name: country
+        tests:
+          - not_null
+      - name: country_iso2
+        tests:
+          - not_null
+      - name: commodity
+        tests:
+          - not_null
+      - name: total_tn
+        tests:
+          - not_null
+
+  - name: stg_worldbank_prices
+    description: Staged World Bank commodity price indicators for Argentina
+    columns:
+      - name: indicator_code
+        tests:
+          - not_null
+      - name: indicator_name
+        tests:
+          - not_null
+      - name: year
+        tests:
+          - not_null
+      - name: indicator_value
+        tests:
+          - not_null
+
+  - name: stg_weather_readings
+    description: Staged daily weather readings by province
+    columns:
+      - name: date
+        tests:
+          - not_null
+      - name: province
+        tests:
+          - not_null
+      - name: station_id
+        tests:
+          - not_null

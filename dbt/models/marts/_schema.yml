@@ -1,0 +1,125 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: Date dimension spanning 1993–2030
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+          - unique
+      - name: year
+        tests:
+          - not_null
+      - name: quarter
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4]
+      - name: month
+        tests:
+          - not_null
+      - name: week
+        tests:
+          - not_null
+      - name: year_quarter
+        tests:
+          - not_null
+
+  - name: dim_product
+    description: Product/commodity dimension with category mapping
+    columns:
+      - name: product_key
+        tests:
+          - not_null
+          - unique
+      - name: commodity
+        tests:
+          - not_null
+          - unique
+      - name: product_category
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Oilseeds
+                  - Grains
+                  - Livestock
+                  - Citrus
+                  - Fruits
+                  - Other
+      - name: commodity_english
+        tests:
+          - not_null
+
+  - name: dim_province
+    description: Argentine province dimension with region flags
+    columns:
+      - name: province_key
+        tests:
+          - not_null
+          - unique
+      - name: province
+        tests:
+          - not_null
+          - unique
+      - name: is_pampa_region
+        tests:
+          - not_null
+      - name: main_crop
+        tests:
+          - not_null
+
+  - name: dim_destination
+    description: Export destination dimension (current SCD Type 2 records)
+    columns:
+      - name: destination_key
+        tests:
+          - not_null
+          - unique
+      - name: country_iso2
+        tests:
+          - not_null
+      - name: country
+        tests:
+          - not_null
+      - name: continent
+        tests:
+          - not_null
+
+  - name: fct_exports
+    description: Fact table — annual export records with apportioned FOB USD
+    columns:
+      - name: export_key
+        tests:
+          - not_null
+          - unique
+      - name: date_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: product_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_product')
+                field: product_key
+      - name: province_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_province')
+                field: province_key
+      - name: year
+        tests:
+          - not_null
+      - name: total_tn
+        tests:
+          - not_null

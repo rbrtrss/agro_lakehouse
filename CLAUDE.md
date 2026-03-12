@@ -79,12 +79,13 @@ Partitioning convention on Bronze: `source=<name>/year=<YYYY>/month=<MM>/`
 
 ## Test-Driven Development (TDD)
 
-**ALWAYS** follow the Red-Green cycle when adding any new feature:
+**ALWAYS** use the `tdd` skill when adding any new feature or fixing bugs:
 
-1. **Write the test first** — define the expected behavior in `tests/`
-2. **Run the test** — confirm it fails (`uv run pytest`)
-3. **Write the minimum code** to make it pass
-4. **Repeat** iteratively until the feature is complete
+1. Invoke `@tdd` to enter the Red-Green-Refactor loop
+2. **Write the test first** — define the expected behavior in `tests/`
+3. **Run the test** — confirm it fails (`uv run pytest`)
+4. **Write the minimum code** to make it pass
+5. **Repeat** iteratively until the feature is complete
 
 Never write implementation code before a failing test exists for it.
 
