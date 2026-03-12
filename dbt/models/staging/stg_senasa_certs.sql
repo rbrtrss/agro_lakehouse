@@ -8,5 +8,5 @@ select
     lower(trim(pais_destino))                      as country,
     pais_destino_id_iso_3166_1                     as country_iso2,
     lower(trim(mercaderia_certificada))            as commodity,
-    cast(toneladas as double)                      as total_tn
+    cast(tn as double)                             as total_tn
 from source

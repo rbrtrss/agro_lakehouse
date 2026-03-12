@@ -40,8 +40,7 @@ indec_agg as (
         year,
         province,
         country,
-        sum(fob_usd)   as total_fob_usd,
-        sum(total_tn)  as total_tn
+        sum(fob_usd)   as total_fob_usd
     from {{ ref('stg_indec_exports') }}
     group by year, province, country
 ),

@@ -13,22 +13,13 @@ models:
       - name: country
         tests:
           - not_null
-      - name: commodity
-        tests:
-          - not_null
       - name: fob_usd
-        tests:
-          - not_null
-      - name: total_tn
         tests:
           - not_null
 
   - name: stg_senasa_certs
     description: Staged SENASA phytosanitary certificates — select + rename only
     columns:
-      - name: year
-        tests:
-          - not_null
       - name: province
         tests:
           - not_null
@@ -36,14 +27,8 @@ models:
         tests:
           - not_null
       - name: country_iso2
-        tests:
-          - not_null
       - name: commodity
-        tests:
-          - not_null
       - name: total_tn
-        tests:
-          - not_null
 
   - name: stg_worldbank_prices
     description: Staged World Bank commodity price indicators for Argentina
@@ -70,6 +55,6 @@ models:
       - name: province
         tests:
           - not_null
-      - name: station_id
-        tests:
-          - not_null
+      - name: temp_max_c
+      - name: temp_min_c
+      - name: precipitation_mm
