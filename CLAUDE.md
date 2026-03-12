@@ -4,6 +4,10 @@
 
 End-to-end AWS data lakehouse for Argentina's agricultural export data. Medallion architecture (Bronze/Silver/Gold) using Apache Iceberg, dbt, Airflow, and Terraform.
 
+## Plan mode
+- Make the plan extremely concise. Sacrifice grammar for the sake of concision.
+- At the end of each plan, give me a list of unresolved questions to answer, if any.
+
 ## Repository Layout
 
 ```
