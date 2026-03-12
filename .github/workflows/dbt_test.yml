@@ -13,8 +13,11 @@ jobs:
         with:
           python-version: "3.13"
       - run: uv sync
-      - run: uv run dbt deps --project-dir dbt
-      - run: uv run dbt compile --project-dir dbt
-      # Full dbt run + test requires AWS creds — skip in CI until Athena is set up
-      # - run: uv run dbt run --project-dir dbt
-      # - run: uv run dbt test --project-dir dbt
+      - run: uv run dbt deps    --project-dir dbt --profiles-dir dbt
+      # dbt parse: validates Jinja, refs, and schema YAML without an AWS connection.
+      # dbt compile/run require the Athena adapter to call sts:GetCallerIdentity even
+      # with no models selected, so they fail without credentials.
+      - run: uv run dbt parse   --project-dir dbt --profiles-dir dbt
+      # Full dbt run + test requires AWS creds — skip in CI until OIDC is wired up
+      # - run: uv run dbt run  --project-dir dbt --profiles-dir dbt
+      # - run: uv run dbt test --project-dir dbt --profiles-dir dbt

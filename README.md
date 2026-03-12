@@ -261,11 +261,11 @@ dbt test
 - [x] Register Iceberg tables in Glue Catalog, verify Athena queries
 
 ### Phase 3 — Transformation
-- [ ] Set up dbt project with Athena adapter
-- [ ] Build staging models (`stg_*`) for each source
-- [ ] Build intermediate model joining exports + prices
-- [ ] Build Gold mart models (`fct_exports` + all dims)
-- [ ] Add dbt tests: not_null, unique, accepted_values, relationships
+- [x] Set up dbt project with Athena adapter
+- [x] Build staging models (`stg_*`) for each source
+- [x] Build intermediate model joining exports + prices
+- [x] Build Gold mart models (`fct_exports` + all dims)
+- [x] Add dbt tests: not_null, unique, accepted_values, relationships
 
 ### Phase 4 — Orchestration & Quality
 - [ ] Write Airflow DAGs for ingestion scheduling
